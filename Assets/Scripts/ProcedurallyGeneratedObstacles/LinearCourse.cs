@@ -200,6 +200,11 @@ public class LinearCourse : MonoBehaviour {
         //Setup the renderer
         renderer.material = this.obstacleWallMaterial;
 
+        //Move the new object to the parent transform.
+        gameObj.transform.position = this.gameObject.transform.position;
+        gameObj.transform.rotation = this.gameObject.transform.rotation;
+        gameObj.transform.localScale = this.gameObject.transform.localScale;
+
         return gameObj;
     }
     private Mesh createWallMesh(float lenOffset, float width, float center) {
@@ -208,12 +213,19 @@ public class LinearCourse : MonoBehaviour {
 
         Vector3[] verts = new Vector3[8];   //Floor raise requires 8 verticies
         int[] trigs = new int[30];          //10 triangles => 30 indexing positions
+        Vector2[] uvs = new Vector2[8];     //UV mappings for this mesh
 
         //Front face
         verts[0] = new Vector3(center + width / 2, 0, lenOffset);
         verts[1] = new Vector3(center - width / 2, 0, lenOffset);
         verts[2] = new Vector3(center - width / 2, courseHeight, lenOffset);
         verts[3] = new Vector3(center + width / 2, courseHeight, lenOffset);
+
+        uvs[0] = new Vector2(0, 0);
+        uvs[1] = new Vector2(0, 1);
+        uvs[2] = new Vector2(1, 0);
+        uvs[3] = new Vector2(1, 1);
+
 
         Debug.Log("vert[0] xval on " + mesh.name + " is " + verts[0]);
         Debug.Log("vert[1] xval on " + mesh.name + " is " + verts[1]);
@@ -230,6 +242,11 @@ public class LinearCourse : MonoBehaviour {
         verts[5] = new Vector3(center - width / 2, 0, lenOffset + 5);
         verts[6] = new Vector3(center - width / 2, courseHeight, lenOffset + 5);
         verts[7] = new Vector3(center + width / 2, courseHeight, lenOffset + 5);
+
+        uvs[4]= new Vector2(1, 1);
+        uvs[5] = new Vector2(0, 1);
+        uvs[6] = new Vector2(0, 0);
+        uvs[7] = new Vector2(1, 0);
 
         trigs[6] = 4;
         trigs[7] = 7;
@@ -264,6 +281,7 @@ public class LinearCourse : MonoBehaviour {
 
         mesh.vertices = verts;
         mesh.triangles = trigs;
+        mesh.uv = uvs;
 
         return mesh;
     }
@@ -308,6 +326,11 @@ public class LinearCourse : MonoBehaviour {
         floorMaterial = floorMaterial2;
         floorMaterial2 = tmp;
 
+        //Move the new object to the parent transform.
+        gameObj.transform.position = this.gameObject.transform.position;
+        gameObj.transform.rotation = this.gameObject.transform.rotation;
+        gameObj.transform.localScale = this.gameObject.transform.localScale;
+
         return gameObj;
     }
     private Mesh createFloorRaiseMesh(float lenOffset, float endingLen) {
@@ -320,12 +343,18 @@ public class LinearCourse : MonoBehaviour {
 
         Vector3[] verts = new Vector3[8];   //Floor raise requires 8 verticies
         int[] trigs = new int[18];          //6 triangles => 18 indexing positions
+        Vector2[] uvs = new Vector2[8];     //UV mappings for this mesh
 
         //Front face
         verts[0] = new Vector3(courseWidth / 2, currentFloorHeight, lenOffset - (courseWidth / 2) * Mathf.Tan(angleRad));
         verts[1] = new Vector3(-courseWidth / 2, currentFloorHeight, lenOffset + (courseWidth / 2) * Mathf.Tan(angleRad));
         verts[2] = new Vector3(-courseWidth / 2, currentFloorHeight + jumpHeight, lenOffset + (courseWidth / 2) * Mathf.Tan(angleRad));
         verts[3] = new Vector3(courseWidth / 2, currentFloorHeight + jumpHeight, lenOffset - (courseWidth / 2) * Mathf.Tan(angleRad));
+
+        uvs[0] = new Vector2(0, 0);
+        uvs[1] = new Vector2(0, 1);
+        uvs[2] = new Vector2(0, 0);
+        uvs[3] = new Vector2(1, 0);
 
         trigs[0] = 0;
         trigs[1] = 1;
@@ -339,6 +368,11 @@ public class LinearCourse : MonoBehaviour {
         verts[5] = new Vector3(-courseWidth / 2, currentFloorHeight, endingLen);
         verts[6] = new Vector3(-courseWidth / 2, currentFloorHeight + jumpHeight, endingLen);
         verts[7] = new Vector3(courseWidth / 2, currentFloorHeight + jumpHeight, endingLen);
+
+        uvs[4] = new Vector2(1, 1);
+        uvs[5] = new Vector2(0, 1);
+        uvs[6] = new Vector2(1, 1);
+        uvs[7] = new Vector2(0, 1);
 
         trigs[6] = 4;
         trigs[7] = 7;
@@ -357,6 +391,7 @@ public class LinearCourse : MonoBehaviour {
 
         mesh.vertices = verts;
         mesh.triangles = trigs;
+        mesh.uv = uvs;
 
         return mesh;
     }
@@ -386,6 +421,13 @@ public class LinearCourse : MonoBehaviour {
         int[] triangles = { 0, 1, 2, 2, 3, 0 };
         mesh.triangles = triangles;
 
+        Vector2[] uvs = { new Vector2(0,0),
+                          new Vector2(1,0),
+                          new Vector2(1,1),
+                          new Vector2(0,1) };
+        mesh.uv = uvs;
+
+
         //Create the mesh and assign it to the gameobjects meshFilter and mesh collider
         filter.mesh = mesh;
         collider.sharedMesh = mesh;
@@ -398,6 +440,11 @@ public class LinearCourse : MonoBehaviour {
         Material tmp = floorMaterial;
         floorMaterial = floorMaterial2;
         floorMaterial2 = tmp;
+
+        //Move the new object to the parent transform.
+        gameObj.transform.position = this.gameObject.transform.position;
+        gameObj.transform.rotation = this.gameObject.transform.rotation;
+        gameObj.transform.localScale = this.gameObject.transform.localScale;
 
         return gameObj;
     }
