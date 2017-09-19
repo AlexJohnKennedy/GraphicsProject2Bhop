@@ -221,6 +221,6 @@ public class MovementScript_NoRBphysics : MonoBehaviour {
         Vector3 vel = (rb.velocity);
         vel.y = 0;  //Remove vertical component 
         float speed = vel.magnitude;
-        Debug.Log("Current horizontal speed = " + speed);
+        //Debug.Log("Current horizontal speed = " + speed);
     }
 }

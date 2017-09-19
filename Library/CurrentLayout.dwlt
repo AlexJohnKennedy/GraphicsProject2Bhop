@@ -42,10 +42,10 @@ MonoBehaviour:
     y: 30
     width: 1680
     height: 928
-  m_MinSize: {x: 683, y: 492}
-  m_MaxSize: {x: 14004, y: 14042}
+  m_MinSize: {x: 683, y: 342}
+  m_MaxSize: {x: 12008, y: 8042}
   vertical: 0
-  controlID: 46
+  controlID: 72
 --- !u!114 &3
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -115,14 +115,14 @@ MonoBehaviour:
     y: 561
     width: 1380
     height: 367
-  m_MinSize: {x: 232, y: 271}
-  m_MaxSize: {x: 10002, y: 10021}
-  m_ActualView: {fileID: 14}
+  m_MinSize: {x: 102, y: 121}
+  m_MaxSize: {x: 4002, y: 4021}
+  m_ActualView: {fileID: 19}
   m_Panes:
   - {fileID: 14}
   - {fileID: 19}
-  m_Selected: 0
-  m_LastSelected: 1
+  m_Selected: 1
+  m_LastSelected: 0
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -207,10 +207,10 @@ MonoBehaviour:
     y: 0
     width: 1380
     height: 928
-  m_MinSize: {x: 406, y: 492}
-  m_MaxSize: {x: 10002, y: 14042}
+  m_MinSize: {x: 406, y: 342}
+  m_MaxSize: {x: 8006, y: 8042}
   vertical: 1
-  controlID: 47
+  controlID: 73
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -356,19 +356,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/TexturesAndMaterials
+    - Assets/Scripts/PlayerMovementScripts
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/TexturesAndMaterials
+  - Assets/Scripts/PlayerMovementScripts
   m_LastFoldersGridSize: 16
   m_LastProjectPath: D:\UnityProjects\GraphicsProject2_BhopGame
   m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: e2240000
-    m_LastClickedID: 9442
-    m_ExpandedIDs: 00000000a02400000a25000000ca9a3bffffff7f
+    m_SelectedIDs: cc240000
+    m_LastClickedID: 9420
+    m_ExpandedIDs: 00000000a22400000e25000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -396,7 +396,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000a02400000a250000
+    m_ExpandedIDs: 00000000a22400000e250000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -421,24 +421,24 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 
-    m_LastClickedInstanceID: 0
+    m_SelectedInstanceIDs: 38050000
+    m_LastClickedInstanceID: 1336
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c623000000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: LinearCourse
-      m_OriginalName: LinearCourse
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 9798
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 5}
     m_CreateAssetUtility:
@@ -512,9 +512,9 @@ MonoBehaviour:
     height: 540
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 
-    m_LastClickedID: 0
-    m_ExpandedIDs: 28f9ffffe6fbffff000000007a250000
+    m_SelectedIDs: c0250000
+    m_LastClickedID: 9664
+    m_ExpandedIDs: e6fbffff00000000c0250000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -569,10 +569,10 @@ MonoBehaviour:
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 0.000000029802322, y: 3.25, z: -0.00000011920929}
+    m_Target: {x: 2.5352554, y: 18.539383, z: 28.791542}
     speed: 2
-    m_Value: {x: 0.000000029802322, y: 3.25, z: -0.00000011920929}
-  m_RenderMode: 0
+    m_Value: {x: 2.5352554, y: 18.539383, z: 28.791542}
+  m_RenderMode: 2
   m_ValidateTrueMetals: 0
   m_SceneViewState:
     showFog: 1
@@ -596,11 +596,11 @@ MonoBehaviour:
   m_Rotation:
     m_Target: {x: 0.19858956, y: -0.54804605, z: 0.13586038, w: 0.8010928}
     speed: 2
-    m_Value: {x: 0.19858956, y: -0.54804605, z: 0.13586038, w: 0.8010928}
+    m_Value: {x: -0.19858955, y: 0.54804605, z: -0.13586038, w: -0.8010928}
   m_Size:
-    m_Target: 35.63818
+    m_Target: 87.03788
     speed: 2
-    m_Value: 35.63818
+    m_Value: 87.03788
   m_Ortho:
     m_Target: 0
     speed: 2

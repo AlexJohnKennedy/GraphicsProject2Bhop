@@ -17,6 +17,7 @@ public class LinearCourse : MonoBehaviour {
     //Dimensions and spacing parameters.
     public float courseLength;      //How far the obstacle course will extend onwards.
     public float courseWidth;       //How wide the course will be.
+    public float courseHeight;
     public float jumpHeight;        //Determines how high off of the ground a block should be such that the player can jump over or onto it.
     public float averageSpacing;    //Determines how close together the obstacles should be on average. Larger number means more spaced out objects!
     public float spacingVariation;  //How much we allowed to deviated from the average spacing randomly when spacing objects!
@@ -103,7 +104,7 @@ public class LinearCourse : MonoBehaviour {
             return generateFloorRaise(lenOffset);
         } 
         else if (rand < obstacleChanceBrackets[FULL_WALL_INDEX]) {
-            //return generateWall(lenOffset);
+            return generateWall(lenOffset);
         }
         else if (rand < obstacleChanceBrackets[THIN_JUMP_BLOCK_INDEX]) {
             //return generateThinJump(lenOffset);
@@ -140,6 +141,131 @@ public class LinearCourse : MonoBehaviour {
             }
         }
         return angleDeg * Mathf.PI / 180f;
+    }
+
+    private GameObject generateWall(float lenOffset) {
+        GameObject gameObj = new GameObject("Wall Obstacle");     //Will be the newly created game object just for this section!
+
+        //Setup new gameobject!
+        gameObj.transform.SetParent(this.gameObject.transform);
+        gameObj.layer = this.gameObject.layer;      //Set child gameObject to have the same layer as the parent gameobject (should be 'ground')
+        MeshFilter filter = gameObj.AddComponent<MeshFilter>();
+        MeshCollider collider = gameObj.AddComponent<MeshCollider>();
+        MeshRenderer renderer = gameObj.AddComponent<MeshRenderer>();
+
+        //Generate a 'width' value for the new wall. It should be a MAX of 3/4 of the course width.
+        //The MIN width should be 1/4 of the course length.
+        //If the width > half the course width, we'll force the wall to be 'stuck' to one side or the other (only one gap).
+        //If the width <= half the course, we'll allow if to spawn anyway along the width axis.
+
+        float width = Random.Range(0.25f, 0.75f) * courseWidth; //Width of the wall.
+        Debug.Log("Width = " + width);
+        float center, ran;
+        if (width > 0.5 * courseWidth) {
+            //Force the wall to spawn connected to edge of course, but randomly generate which side!
+            ran = Random.Range(-1f, 1f);
+            if (ran < 0) {
+                //LEFT WALL
+                center = -(courseWidth - width) / 2;
+            }
+            else {
+                //RIGHT WALL
+                center = (courseWidth - width) / 2;
+            }
+        }
+        else {
+            //Allow the wall to go anywhere..
+            ran = Random.Range(-0.25f, 0.25f);
+            center = ran * courseWidth;
+
+            //If the wall is clipping through, clamp the center point to be stuck to the wall..
+            if (Mathf.Abs(center) + width/2 > courseWidth/2) {
+                if (ran < 0) {
+                    //LEFT WALL
+                    center = -(courseWidth - width) / 2;
+                }
+                else {
+                    //RIGHT WALL
+                    center = (courseWidth - width) / 2;
+                }
+            }
+        }
+        Debug.Log("Center = " + center);
+
+        //Create the mesh and assign it to the gameobject's meshfilter and collider!
+        Mesh mesh = createWallMesh(lenOffset, width, center);
+        filter.mesh = mesh;
+        collider.sharedMesh = mesh;
+
+        //Setup the renderer
+        renderer.material = this.obstacleWallMaterial;
+
+        return gameObj;
+    }
+    private Mesh createWallMesh(float lenOffset, float width, float center) {
+        Mesh mesh = new Mesh();
+        mesh.name = "wallObs" + lenOffset;
+
+        Vector3[] verts = new Vector3[8];   //Floor raise requires 8 verticies
+        int[] trigs = new int[30];          //10 triangles => 30 indexing positions
+
+        //Front face
+        verts[0] = new Vector3(center + width / 2, 0, lenOffset);
+        verts[1] = new Vector3(center - width / 2, 0, lenOffset);
+        verts[2] = new Vector3(center - width / 2, courseHeight, lenOffset);
+        verts[3] = new Vector3(center + width / 2, courseHeight, lenOffset);
+
+        Debug.Log("vert[0] xval on " + mesh.name + " is " + verts[0]);
+        Debug.Log("vert[1] xval on " + mesh.name + " is " + verts[1]);
+
+        trigs[0] = 0;
+        trigs[1] = 1;
+        trigs[2] = 3;
+        trigs[3] = 1;
+        trigs[4] = 2;
+        trigs[5] = 3;
+
+        //Back face
+        verts[4] = new Vector3(center + width / 2, 0, lenOffset + 5);
+        verts[5] = new Vector3(center - width / 2, 0, lenOffset + 5);
+        verts[6] = new Vector3(center - width / 2, courseHeight, lenOffset + 5);
+        verts[7] = new Vector3(center + width / 2, courseHeight, lenOffset + 5);
+
+        trigs[6] = 4;
+        trigs[7] = 7;
+        trigs[8] = 5;
+        trigs[9] = 5;
+        trigs[10] = 7;
+        trigs[11] = 6;
+
+        //Top face
+        trigs[12] = 3;
+        trigs[13] = 2;
+        trigs[14] = 7;
+        trigs[15] = 2;
+        trigs[16] = 6;
+        trigs[17] = 7;
+
+        //Left face
+        trigs[18] = 1;
+        trigs[19] = 5;
+        trigs[20] = 6;
+        trigs[21] = 1;
+        trigs[22] = 6;
+        trigs[23] = 2;
+
+        //Right face
+        trigs[24] = 0;
+        trigs[25] = 3;
+        trigs[26] = 7;
+        trigs[27] = 0;
+        trigs[28] = 7;
+        trigs[29] = 4;
+
+        mesh.vertices = verts;
+        mesh.triangles = trigs;
+
+        return mesh;
     }
 
     private GameObject generateFloorRaise(float lenOffset) {
