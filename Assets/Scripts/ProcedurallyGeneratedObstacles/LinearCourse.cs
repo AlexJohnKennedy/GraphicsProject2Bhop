@@ -24,6 +24,8 @@ public class LinearCourse : MonoBehaviour {
     public float angledChance;      //How often a generated obstacle should have some randomly applied YAW rotation. (0-1)
     public float angled45DegChance; //How often a generated obstacle, GIVEN it is being rotated, should be rotated exactly 45 degrees yaw in some direction. (0-1)
     public float angleVariation;
+    public float jumpBlockWidth;
+    public float jumpBlockWidthVariation;
 
     //Weightings for how likely each type of obstacle. (adjusting these will change the nature of the course.)
     public float floorRaiseChance;      //Object with must be jumped onto and raises the the overall 'height' of the floor, since it forms floor.
@@ -114,7 +116,10 @@ public class LinearCourse : MonoBehaviour {
             gameObj = WallObstacleGenerator.generateWall(lenOffset, courseWidth, courseHeight, wallDepth, obstacleWallMaterial);
         }
         else if (rand < obstacleChanceBrackets[THIN_JUMP_BLOCK_INDEX]) {
-            //return generateThinJump(lenOffset);
+            float angle = getRandomAngle();
+            Debug.Log(angle);
+            float width = jumpBlockWidth + Random.Range(-1f, 1f) * jumpBlockWidthVariation;
+            gameObj = JumpBlockGenerator.generateJumpBlock(lenOffset, courseWidth, currentFloorHeight, jumpHeight, 5f, width, angle, obstacleWallMaterial);
         }
         else if (rand < obstacleChanceBrackets[FAT_JUMP_BLOCK_INDEX]) {
             //return generateFatJump(lenOffset);
@@ -137,12 +142,12 @@ public class LinearCourse : MonoBehaviour {
     }
 
     private float getRandomAngle() {
-        bool angled = (Random.Range(0f, 1f) < angledChance);    //Figure out if should have an angled front face.
-
+        float ran = Random.Range(0f, 1f);
+        bool angled = (ran < angledChance);    //Figure out if should have an angled front face.
         float angleDeg = 0;
         if (angled) {
             bool angled45 = (Random.Range(0f, 1f) < angled45DegChance);
-            float ran = Random.Range(-1f, 1f);
+            ran = Random.Range(-1f, 1f);
             if (angled45) {
                 if (ran >= 0) {
                     angleDeg = 45;
