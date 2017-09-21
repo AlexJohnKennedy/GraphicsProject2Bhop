@@ -77,6 +77,8 @@ public class LinearCourse : MonoBehaviour {
         //choice.
         obstacleChanceBrackets = normalizeObstacleChances();
 
+        debugPrintArray(obstacleChanceBrackets);
+
         //Okay, now create a list of values indcating the origin positions of each obstacle..
         List<float> obstacleSpacing = generateRandomObstacleSpacing();
 
@@ -117,15 +119,18 @@ public class LinearCourse : MonoBehaviour {
         }
         else if (rand < obstacleChanceBrackets[THIN_JUMP_BLOCK_INDEX]) {
             float angle = getRandomAngle();
-            Debug.Log(angle);
             float width = jumpBlockWidth + Random.Range(-1f, 1f) * jumpBlockWidthVariation;
-            gameObj = JumpBlockGenerator.generateJumpBlock(lenOffset, courseWidth, currentFloorHeight, jumpHeight, 5f, width, angle, obstacleWallMaterial);
+            gameObj = JumpBlockGenerator.generateJumpBlock(lenOffset, courseWidth, currentFloorHeight, jumpHeight, 3f, width, angle, obstacleWallMaterial);
         }
         else if (rand < obstacleChanceBrackets[FAT_JUMP_BLOCK_INDEX]) {
-            //return generateFatJump(lenOffset);
+            float angle = getRandomAngle();
+            float width = jumpBlockWidth + Random.Range(-1f, 1f) * jumpBlockWidthVariation;
+            gameObj = JumpBlockGenerator.generateJumpBlock(lenOffset, courseWidth, currentFloorHeight, jumpHeight, 7.5f, width, angle, obstacleWallMaterial);
         }
         else if (rand < obstacleChanceBrackets[TALL_JUMP_BLOCK_INDEX]) {
-            //return generateTallJump(lenOffset);
+            float angle = getRandomAngle();
+            float width = jumpBlockWidth + Random.Range(-1f, 1f) * jumpBlockWidthVariation;
+            gameObj = JumpBlockGenerator.generateJumpBlock(lenOffset, courseWidth, currentFloorHeight, jumpHeight*2, 5f, width, angle, obstacleWallMaterial);
         }
         else {
             //return generateDuckBlock(lenOffset);
@@ -254,11 +259,17 @@ public class LinearCourse : MonoBehaviour {
         total += fatJumpBlockChance;
         toRet[FAT_JUMP_BLOCK_INDEX] = total;
         total += tallJumpBlockChance;
-        toRet[THIN_JUMP_BLOCK_INDEX] = total;
+        toRet[TALL_JUMP_BLOCK_INDEX] = total;
         total += duckBlockChance;
         toRet[DUCK_BLOCK_INDEX] = total;
 
         return toRet;
+    }
+
+    private void debugPrintArray(float[] arr) {
+        for (int i=0; i< arr.Length; i++) {
+            Debug.Log("item " + i + " = " + arr[i]);
+        }
     }
 
     private void swapFloorMaterials() {
