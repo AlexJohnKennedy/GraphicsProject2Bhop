@@ -99,12 +99,19 @@ public class LinearCourse : MonoBehaviour {
     public GameObject generateObstacle(float lenOffset) {
         //Randomly decide which type of obstacle to create here.
         float rand = Random.Range(0f, 1f);
+        GameObject gameObj = null;
 
         if (rand < obstacleChanceBrackets[FLOOR_RAISE_INDEX]) {
-            return generateFloorRaise(lenOffset);
+            float angle = getRandomAngle();
+            gameObj = FloorRaiseGenerator.generateFloorRaise(lenOffset, averageSpacing, courseLength, courseWidth, currentFloorHeight, jumpHeight, floorEndCoordStack, angle, floorMaterial);
+            currentFloorHeight += jumpHeight;
+            swapFloorMaterials();
         } 
         else if (rand < obstacleChanceBrackets[FULL_WALL_INDEX]) {
-            return generateWall(lenOffset);
+            float wallDepth;
+            if (averageSpacing >= 20) wallDepth = 5f;
+            else wallDepth = 1.5f;
+            gameObj = WallObstacleGenerator.generateWall(lenOffset, courseWidth, courseHeight, wallDepth, obstacleWallMaterial);
         }
         else if (rand < obstacleChanceBrackets[THIN_JUMP_BLOCK_INDEX]) {
             //return generateThinJump(lenOffset);
@@ -118,7 +125,15 @@ public class LinearCourse : MonoBehaviour {
         else {
             //return generateDuckBlock(lenOffset);
         }
-        return null;    //To avoid annoying error warnings during development..
+
+        //Set up univeral object properities..
+        gameObj.transform.SetParent(this.gameObject.transform);
+        gameObj.layer = this.gameObject.layer;      //Set child gameObject to have the same layer as the parent gameobject (should be 'ground')
+        gameObj.transform.position = this.gameObject.transform.position;
+        gameObj.transform.rotation = this.gameObject.transform.rotation;
+        gameObj.transform.localScale = this.gameObject.transform.localScale;
+
+        return gameObj;    //To avoid annoying error warnings during development..
     }
 
     private float getRandomAngle() {
@@ -141,259 +156,6 @@ public class LinearCourse : MonoBehaviour {
             }
         }
         return angleDeg * Mathf.PI / 180f;
-    }
-
-    private GameObject generateWall(float lenOffset) {
-        GameObject gameObj = new GameObject("Wall Obstacle");     //Will be the newly created game object just for this section!
-
-        //Setup new gameobject!
-        gameObj.transform.SetParent(this.gameObject.transform);
-        gameObj.layer = this.gameObject.layer;      //Set child gameObject to have the same layer as the parent gameobject (should be 'ground')
-        MeshFilter filter = gameObj.AddComponent<MeshFilter>();
-        MeshCollider collider = gameObj.AddComponent<MeshCollider>();
-        MeshRenderer renderer = gameObj.AddComponent<MeshRenderer>();
-
-        //Generate a 'width' value for the new wall. It should be a MAX of 3/4 of the course width.
-        //The MIN width should be 1/4 of the course length.
-        //If the width > half the course width, we'll force the wall to be 'stuck' to one side or the other (only one gap).
-        //If the width <= half the course, we'll allow if to spawn anyway along the width axis.
-
-        float width = Random.Range(0.25f, 0.75f) * courseWidth; //Width of the wall.
-        Debug.Log("Width = " + width);
-        float center, ran;
-        if (width > 0.5 * courseWidth) {
-            //Force the wall to spawn connected to edge of course, but randomly generate which side!
-            ran = Random.Range(-1f, 1f);
-            if (ran < 0) {
-                //LEFT WALL
-                center = -(courseWidth - width) / 2;
-            }
-            else {
-                //RIGHT WALL
-                center = (courseWidth - width) / 2;
-            }
-        }
-        else {
-            //Allow the wall to go anywhere..
-            ran = Random.Range(-0.25f, 0.25f);
-            center = ran * courseWidth;
-
-            //If the wall is clipping through, clamp the center point to be stuck to the wall..
-            if (Mathf.Abs(center) + width/2 > courseWidth/2) {
-                if (ran < 0) {
-                    //LEFT WALL
-                    center = -(courseWidth - width) / 2;
-                }
-                else {
-                    //RIGHT WALL
-                    center = (courseWidth - width) / 2;
-                }
-            }
-        }
-        Debug.Log("Center = " + center);
-
-        //Create the mesh and assign it to the gameobject's meshfilter and collider!
-        Mesh mesh = createWallMesh(lenOffset, width, center);
-        filter.mesh = mesh;
-        collider.sharedMesh = mesh;
-
-        //Setup the renderer
-        renderer.material = this.obstacleWallMaterial;
-
-        //Move the new object to the parent transform.
-        gameObj.transform.position = this.gameObject.transform.position;
-        gameObj.transform.rotation = this.gameObject.transform.rotation;
-        gameObj.transform.localScale = this.gameObject.transform.localScale;
-
-        return gameObj;
-    }
-    private Mesh createWallMesh(float lenOffset, float width, float center) {
-        Mesh mesh = new Mesh();
-        mesh.name = "wallObs" + lenOffset;
-
-        Vector3[] verts = new Vector3[8];   //Floor raise requires 8 verticies
-        int[] trigs = new int[30];          //10 triangles => 30 indexing positions
-        Vector2[] uvs = new Vector2[8];     //UV mappings for this mesh
-
-        //Front face
-        verts[0] = new Vector3(center + width / 2, 0, lenOffset);
-        verts[1] = new Vector3(center - width / 2, 0, lenOffset);
-        verts[2] = new Vector3(center - width / 2, courseHeight, lenOffset);
-        verts[3] = new Vector3(center + width / 2, courseHeight, lenOffset);
-
-        uvs[0] = new Vector2(0, 0);
-        uvs[1] = new Vector2(0, 1);
-        uvs[2] = new Vector2(1, 0);
-        uvs[3] = new Vector2(1, 1);
-
-
-        Debug.Log("vert[0] xval on " + mesh.name + " is " + verts[0]);
-        Debug.Log("vert[1] xval on " + mesh.name + " is " + verts[1]);
-
-        trigs[0] = 0;
-        trigs[1] = 1;
-        trigs[2] = 3;
-        trigs[3] = 1;
-        trigs[4] = 2;
-        trigs[5] = 3;
-
-        //Back face
-        verts[4] = new Vector3(center + width / 2, 0, lenOffset + 5);
-        verts[5] = new Vector3(center - width / 2, 0, lenOffset + 5);
-        verts[6] = new Vector3(center - width / 2, courseHeight, lenOffset + 5);
-        verts[7] = new Vector3(center + width / 2, courseHeight, lenOffset + 5);
-
-        uvs[4]= new Vector2(1, 1);
-        uvs[5] = new Vector2(0, 1);
-        uvs[6] = new Vector2(0, 0);
-        uvs[7] = new Vector2(1, 0);
-
-        trigs[6] = 4;
-        trigs[7] = 7;
-        trigs[8] = 5;
-        trigs[9] = 5;
-        trigs[10] = 7;
-        trigs[11] = 6;
-
-        //Top face
-        trigs[12] = 3;
-        trigs[13] = 2;
-        trigs[14] = 7;
-        trigs[15] = 2;
-        trigs[16] = 6;
-        trigs[17] = 7;
-
-        //Left face
-        trigs[18] = 1;
-        trigs[19] = 5;
-        trigs[20] = 6;
-        trigs[21] = 1;
-        trigs[22] = 6;
-        trigs[23] = 2;
-
-        //Right face
-        trigs[24] = 0;
-        trigs[25] = 3;
-        trigs[26] = 7;
-        trigs[27] = 0;
-        trigs[28] = 7;
-        trigs[29] = 4;
-
-        mesh.vertices = verts;
-        mesh.triangles = trigs;
-        mesh.uv = uvs;
-
-        return mesh;
-    }
-
-    private GameObject generateFloorRaise(float lenOffset) {
-        GameObject gameObj = new GameObject("Floor raise obstacle");     //Will be the newly created game object just for this section!
-        
-        //Setup new gameobject!
-        gameObj.transform.SetParent(this.gameObject.transform);
-        gameObj.layer = this.gameObject.layer;      //Set child gameObject to have the same layer as the parent gameobject (should be 'ground')
-        MeshFilter filter = gameObj.AddComponent<MeshFilter>();
-        MeshCollider collider = gameObj.AddComponent<MeshCollider>();
-        MeshRenderer renderer = gameObj.AddComponent<MeshRenderer>();
-
-        //Generate a random 'distance' over which the floor raise will last
-        float span = Random.Range(1f, 20f) * averageSpacing;
-        float endingLen = span + lenOffset;
-        if (floorEndCoordStack.Count != 0 && endingLen > floorEndCoordStack.Peek()) {
-            //We over stepped the floor below.. we should clamp this span.
-            endingLen = floorEndCoordStack.Peek();
-        }
-        else if (endingLen > courseLength - 0.5 * averageSpacing) {
-            //Oops, this is spanning too far!
-            endingLen = (float)(courseLength - 0.5 * averageSpacing);
-        }
-
-        //Create the mesh and assign it to the gameobjects meshFilter and mesh collider
-        Mesh mesh = createFloorRaiseMesh(lenOffset, endingLen);
-        filter.mesh = mesh;
-        collider.sharedMesh = mesh;
-
-        //In order to keep track of the ending points of all the raised floors, we should push the floor change..
-        floorEndCoordStack.Push(endingLen);
-        this.currentFloorHeight += jumpHeight;
-
-        //Setup the renderer
-        renderer.material = this.floorMaterial;
-        renderer.material.SetTexture("stone ground", stonyGround);
-
-        //SWAP TEXTURES FOR NEXT GUY TO GET DIFFERENT MATERIAL
-        Material tmp = floorMaterial;
-        floorMaterial = floorMaterial2;
-        floorMaterial2 = tmp;
-
-        //Move the new object to the parent transform.
-        gameObj.transform.position = this.gameObject.transform.position;
-        gameObj.transform.rotation = this.gameObject.transform.rotation;
-        gameObj.transform.localScale = this.gameObject.transform.localScale;
-
-        return gameObj;
-    }
-    private Mesh createFloorRaiseMesh(float lenOffset, float endingLen) {
-
-        //Floor raises fill entire width.
-        float angleRad = getRandomAngle();
-
-        Mesh mesh = new Mesh();
-        mesh.name = "floorRaise" + lenOffset;
-
-        Vector3[] verts = new Vector3[8];   //Floor raise requires 8 verticies
-        int[] trigs = new int[18];          //6 triangles => 18 indexing positions
-        Vector2[] uvs = new Vector2[8];     //UV mappings for this mesh
-
-        //Front face
-        verts[0] = new Vector3(courseWidth / 2, currentFloorHeight, lenOffset - (courseWidth / 2) * Mathf.Tan(angleRad));
-        verts[1] = new Vector3(-courseWidth / 2, currentFloorHeight, lenOffset + (courseWidth / 2) * Mathf.Tan(angleRad));
-        verts[2] = new Vector3(-courseWidth / 2, currentFloorHeight + jumpHeight, lenOffset + (courseWidth / 2) * Mathf.Tan(angleRad));
-        verts[3] = new Vector3(courseWidth / 2, currentFloorHeight + jumpHeight, lenOffset - (courseWidth / 2) * Mathf.Tan(angleRad));
-
-        uvs[0] = new Vector2(0, 0);
-        uvs[1] = new Vector2(0, 1);
-        uvs[2] = new Vector2(0, 0);
-        uvs[3] = new Vector2(1, 0);
-
-        trigs[0] = 0;
-        trigs[1] = 1;
-        trigs[2] = 3;
-        trigs[3] = 1;
-        trigs[4] = 2;
-        trigs[5] = 3;
-
-        //Back face
-        verts[4] = new Vector3(courseWidth / 2, currentFloorHeight, endingLen);
-        verts[5] = new Vector3(-courseWidth / 2, currentFloorHeight, endingLen);
-        verts[6] = new Vector3(-courseWidth / 2, currentFloorHeight + jumpHeight, endingLen);
-        verts[7] = new Vector3(courseWidth / 2, currentFloorHeight + jumpHeight, endingLen);
-
-        uvs[4] = new Vector2(1, 1);
-        uvs[5] = new Vector2(0, 1);
-        uvs[6] = new Vector2(1, 1);
-        uvs[7] = new Vector2(0, 1);
-
-        trigs[6] = 4;
-        trigs[7] = 7;
-        trigs[8] = 5;
-        trigs[9] = 5;
-        trigs[10] = 7;
-        trigs[11] = 6;
-
-        //Top Face triangle assignment
-        trigs[12] = 3;
-        trigs[13] = 2;
-        trigs[14] = 7;
-        trigs[15] = 2;
-        trigs[16] = 6;
-        trigs[17] = 7;
-
-        mesh.vertices = verts;
-        mesh.triangles = trigs;
-        mesh.uv = uvs;
-
-        return mesh;
     }
 
     private GameObject buildFloorMesh() {
@@ -425,7 +187,7 @@ public class LinearCourse : MonoBehaviour {
                           new Vector2(1,0),
                           new Vector2(1,1),
                           new Vector2(0,1) };
-        mesh.uv = uvs;
+        uvs = uvs;
 
 
         //Create the mesh and assign it to the gameobjects meshFilter and mesh collider
@@ -494,8 +256,15 @@ public class LinearCourse : MonoBehaviour {
         return toRet;
     }
 
+    private void swapFloorMaterials() {
+        Material tmp = floorMaterial;
+        floorMaterial = floorMaterial2;
+        floorMaterial2 = tmp;
+    }
+
 	// Update is called once per frame
 	void Update () {
 		
 	}
+
 }
