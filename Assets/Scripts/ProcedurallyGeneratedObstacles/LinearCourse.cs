@@ -92,7 +92,7 @@ public class LinearCourse : MonoBehaviour {
                 //The top value has been exceeded! This means some upper floor has ended.
                 //we should pop and lower the floor height.
                 floorEndCoordStack.Pop();
-                currentFloorHeight -= jumpHeight;
+                currentFloorHeight -= jumpHeight * 0.9f;
             }
 
             //Okay, now that we have aquired the correct floor height, we should randomly generate an obstacle!
@@ -107,8 +107,8 @@ public class LinearCourse : MonoBehaviour {
 
         if (rand < obstacleChanceBrackets[FLOOR_RAISE_INDEX]) {
             float angle = getRandomAngle();
-            gameObj = FloorRaiseGenerator.generateFloorRaise(lenOffset, averageSpacing, courseLength, courseWidth, currentFloorHeight, jumpHeight, floorEndCoordStack, angle, floorMaterial);
-            currentFloorHeight += jumpHeight;
+            gameObj = FloorRaiseGenerator.generateFloorRaise(lenOffset, averageSpacing, courseLength, courseWidth, currentFloorHeight, jumpHeight*0.9f, floorEndCoordStack, angle, floorMaterial);
+            currentFloorHeight += jumpHeight*0.9f;
             swapFloorMaterials();
         } 
         else if (rand < obstacleChanceBrackets[FULL_WALL_INDEX]) {
@@ -130,7 +130,7 @@ public class LinearCourse : MonoBehaviour {
         else if (rand < obstacleChanceBrackets[TALL_JUMP_BLOCK_INDEX]) {
             float angle = getRandomAngle();
             float width = jumpBlockWidth + Random.Range(-1f, 1f) * jumpBlockWidthVariation;
-            gameObj = JumpBlockGenerator.generateJumpBlock(lenOffset, courseWidth, currentFloorHeight, jumpHeight*2, 5f, width, angle, obstacleWallMaterial);
+            gameObj = JumpBlockGenerator.generateJumpBlock(lenOffset, courseWidth, currentFloorHeight, jumpHeight*2, 5f, width, angle, tallJumpBlockMaterial);
         }
         else {
             //return generateDuckBlock(lenOffset);

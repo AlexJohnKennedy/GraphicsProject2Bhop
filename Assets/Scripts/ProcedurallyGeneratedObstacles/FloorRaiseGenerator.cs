@@ -45,8 +45,8 @@ public class FloorRaiseGenerator {
         Mesh mesh = new Mesh();
         mesh.name = "floorRaise" + lenOffset;
 
-        Vector3[] verts = new Vector3[12];   //Floor raise requires 12 verticies (three faces times four verts per face)
-        int[] trigs = new int[18];          //6 triangles => 18 indexing positions
+        Vector3[] verts = new Vector3[20];   //Floor raise requires 12 verticies (three faces times four verts per face)
+        int[] trigs = new int[30];          
 
         //Front face
         verts[0] = new Vector3(courseWidth / 2, currentFloorHeight, lenOffset - (courseWidth / 2) * Mathf.Tan(angleRad));
@@ -87,6 +87,34 @@ public class FloorRaiseGenerator {
         trigs[15] = 8;
         trigs[16] = 10;
         trigs[17] = 11;
+
+        //Left face
+        verts[16] = new Vector3(verts[5].x, verts[5].y, verts[5].z);
+        verts[17] = new Vector3(verts[1].x, verts[1].y, verts[1].z);
+        verts[18] = new Vector3(verts[2].x, verts[2].y, verts[2].z);
+        verts[19] = new Vector3(verts[6].x, verts[6].y, verts[6].z);
+
+        //right face
+        verts[12] = new Vector3(verts[4].x, verts[4].y, verts[4].z);
+        verts[13] = new Vector3(verts[0].x, verts[0].y, verts[0].z);
+        verts[14] = new Vector3(verts[3].x, verts[3].y, verts[3].z);
+        verts[15] = new Vector3(verts[7].x, verts[7].y, verts[7].z);
+
+        //Left face
+        trigs[18] = 17;
+        trigs[19] = 16;
+        trigs[20] = 19;
+        trigs[21] = 17;
+        trigs[22] = 19;
+        trigs[23] = 18;
+
+        //Right face
+        trigs[24] = 13;
+        trigs[25] = 14;
+        trigs[26] = 15;
+        trigs[27] = 13;
+        trigs[28] = 15;
+        trigs[29] = 12;
 
         mesh.vertices = verts;
         mesh.triangles = trigs;

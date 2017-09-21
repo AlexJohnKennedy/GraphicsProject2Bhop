@@ -83,6 +83,7 @@
     <Compile Include="Assets\Scripts\PlayerMovementScripts\GroundMovement.cs" />
     <Compile Include="Assets\Scripts\PlayerMovementScripts\MovementScript_NoRBphysics.cs" />
     <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\FloorRaiseGenerator.cs" />
+    <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\JumpBlockGenerator.cs" />
     <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\LinearCourse.cs" />
     <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\UVCalculator.cs" />
     <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\WallObstacleGenerator.cs" />
