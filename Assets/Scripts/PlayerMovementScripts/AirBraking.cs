@@ -80,4 +80,10 @@ public class AirBraking : MonoBehaviour {
 
         return resultingVelocity;
     }
+
+    public float getMeterPercentage() {
+        //This is just the current amount / capacity normalized to be 100
+        if (airBrakeMeterCapactity <= 0) return 0;  //Return zero for disabled air braking..
+        return (airBrakeMeter / airBrakeMeterCapactity * 100);
+    }
 }

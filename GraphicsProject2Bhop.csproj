@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\FlyingCamera.cs" />
+    <Compile Include="Assets\Scripts\Hud\StatGatherer.cs" />
     <Compile Include="Assets\Scripts\PlayerMovementScripts\AirBraking.cs" />
     <Compile Include="Assets\Scripts\PlayerMovementScripts\GroundMovement.cs" />
     <Compile Include="Assets\Scripts\PlayerMovementScripts\MovementScript_NoRBphysics.cs" />
