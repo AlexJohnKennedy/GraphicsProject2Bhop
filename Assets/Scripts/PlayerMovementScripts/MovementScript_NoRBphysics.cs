@@ -84,10 +84,10 @@ public class MovementScript_NoRBphysics : MonoBehaviour {
         //This function will perform a physics racast straight downwards. It will only 'detect' gameobjects which are in the 'Ground' layer
         //I.e. we are using unity layers to filter to only ground objects. It will project only a small distance downwards so to accurately detect
         //if we are touching the ground!
-
-        return Physics.Raycast(transform.position,  //Vector3 (xpos,ypos,zpos) - Starting point from which to raycast
+        
+        return Physics.Raycast(transform.position,  //Vector3 (xpos,ypos,zpos) - Starting point from which to raycast. Set this to be the bottom of the collider object
                                transform.up * -1,   //Vector3 (xdir,ydir,zdir) - Direciton to cast the ray
-                               downcastDistance,    //Float - Distance for the cast to go
+                               downcastDistance * transform.localScale.y,    //Float - Distance for the cast to go
                                1 << LayerMask.NameToLayer("Ground")     //Layer filter bitmask - used to determine which colliders we are checking
                                );
     }
@@ -95,7 +95,49 @@ public class MovementScript_NoRBphysics : MonoBehaviour {
     private void groundMovement() {
         //Make Y axis zeroed relative vectors. This way, we only apply horizontal force and don't fly up into the air.
         //TODO: Make the applied force somehow relative to the slop of the ground we are standing on?
+        float speed = rb.velocity.magnitude;
 
+        //Jumping. If the jump key is pressed then directly set vertical velocity on this rigid body
+        //Holding space (bhop mode) also makes us skip friction calculations!
+        if (Input.GetKey(KeyCode.Space)) {
+            //rb.AddForce(transform.up * jumpForce);
+            Vector3 vel = rb.velocity;
+            vel.y = jumpVelocity;
+            rb.velocity = vel;
+        }
+        else if (Input.GetKey(KeyCode.LeftControl) && speed > 3.5) {
+            //NOT bhopping, on the ground but holding crouch. This should be SLIDE MODE.
+            //In slide mode, we will slide along the ground with very low friction, and still be able to curve via strafing.
+            //However, we will not be able to 'increase' our speed. To achieve this, we will save the current speed, apply 'airmovement' control (for strafing)
+            //THEN apply a very small resist speed reduction. If after the reduction we are STILL above the initial speed, we'll directly clamp the speed to whatever the previous was.
+
+            airMovement();
+
+            //Okay, let's simply apply a very slight resistance force for sliding
+            Vector3 currVel = rb.velocity;
+            currVel.Normalize();
+            rb.AddForce(-currVel * speed * groundFrictionCoeff * 0.0005f);
+
+            //If the speed has gone OVER the original speed, even after the resist force, then we need to clamp it back down to avoid crouch-slide acceleration.
+            if (rb.velocity.magnitude > speed * 1.05) {
+                rb.velocity = currVel * speed * 1.05f;  //CurrVel was normalized so this sets the magnitude directly to 'speed'
+            }
+        }
+        else {
+            //Running on ground
+            applyGroundRunningWASDForce();
+
+            //We're on the ground and not bhopping. Thus, we should apply a friction force manually to the rigid body.
+            //Directly oppossing the current velocity
+            Vector3 currVel = rb.velocity;
+            currVel.Normalize();
+
+            //apply backwards acceleration scaled off friction value and current speed.
+            rb.AddForce(-currVel * speed * groundFrictionCoeff);
+        }
+
+    }
+    private void applyGroundRunningWASDForce() {
         //Only apply running forces if we are on the ground.
         Vector3 forward = new Vector3(transform.forward.x, 0, transform.forward.z);
         forward.Normalize();
@@ -124,26 +166,6 @@ public class MovementScript_NoRBphysics : MonoBehaviour {
         }
         dir.Normalize();
         rb.AddForce(dir * runningForce);
-
-        //Jumping. If the jump key is pressed then directly set vertical velocity on this rigid body
-        //Holding space (bhop mode) also makes us skip friction calculations!
-        if (Input.GetKey(KeyCode.Space)) {
-            //rb.AddForce(transform.up * jumpForce);
-            Vector3 vel = rb.velocity;
-            vel.y = jumpVelocity;
-            rb.velocity = vel;
-        }
-        else {
-            //Were on the ground and not bhopping. Thus, we should apply a friction force manually to the rigid body.
-            //Directly oppossing the current 
-            Vector3 currVel = rb.velocity;
-            float speed = currVel.magnitude;
-            currVel.Normalize();
-
-            //apply backwards acceleration scaled off friction value and current speed.
-            rb.AddForce(-currVel * speed * groundFrictionCoeff);
-        }
-
     }
 
     private void airMovement() {
@@ -206,6 +228,23 @@ public class MovementScript_NoRBphysics : MonoBehaviour {
 
         angleX -= mouseDelta.x * mouseSensitivity;     //Up and down rotation. We don't want to actually rotate the body object like this though. We will apply to camera local rotation
         angleY += mouseDelta.y * mouseSensitivity;     //Left and right roation. We will apply this directly to the character body object.
+
+        //Angle clamping to avoid overflows and weird upside down rotatations.
+        if (angleY > 360) {
+            angleY -= 360;
+        }
+        else if (angleY < 0) {
+            angleY += 360;
+        }
+        
+        if (angleX < -90) {
+            //CLAMP DOWNWARDSNESS
+            angleX = -90;
+        }
+        else if (angleX > 90) {
+            //CLAMP UPWARDSNESS
+            angleX = 90;
+        }
 
         //Rotate the character body object itself
         this.transform.eulerAngles = new Vector3(0, angleY + mouseDelta.y, 0);  //Only apply left/right rotation to this object!
