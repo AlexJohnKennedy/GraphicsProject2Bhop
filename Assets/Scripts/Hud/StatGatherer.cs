@@ -10,10 +10,12 @@ public class StatGatherer : MonoBehaviour {
 
     public AirBraking airBrakingObject;  //Contains stat for current 'air brake meter'
     public Rigidbody playerRigidbody;    //Can harvest velocity and movement information about the player from it's rigid body
+    public HealthScript healthObject;    //Contains stat for current 'health'
 
     public Text velocityHudText;
     public Text velocityHudTextShadow;
     public Text airBrakeMeterText;
+    public Text healthHudText;
 
     public float velocityTextPosMaxOffset;      //Parameters used for scaling effect on velocity text.
     public float velocityTextScaleMaxOffset;
@@ -40,6 +42,7 @@ public class StatGatherer : MonoBehaviour {
 	void Update () {
         //Simply update everything.
         updateAirBrakeMeterText();
+        updateHealthText();
         updateVelocityTextObject(velocityHudText, 1f, true);	
         if (velocityHudTextShadow != null) updateVelocityTextObject(velocityHudTextShadow, 0.5f, false);
     }
@@ -47,6 +50,11 @@ public class StatGatherer : MonoBehaviour {
     private void updateAirBrakeMeterText() {
         int perc = (int)airBrakingObject.getMeterPercentage(); //Hard cast to floor value, since we don't want to display decimals..
         airBrakeMeterText.text = perc.ToString();
+    }
+
+    private void updateHealthText() {
+        int health = (int)healthObject.getCurrHealth();
+        healthHudText.text = health.ToString();
     }
 
     private void updateVelocityTextObject(Text velocityHudText, float scalingScaling, bool useColourInterp) {

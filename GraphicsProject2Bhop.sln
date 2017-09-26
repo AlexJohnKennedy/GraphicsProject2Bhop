@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphicsProject2Bhop.Plugins", "GraphicsProject2Bhop.Plugins.csproj", "{2B7B3B11-AB48-97EA-248B-48431C21BC79}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphicsProject2Bhop", "GraphicsProject2Bhop.csproj", "{F695A16E-977D-01AC-4A50-744697B6DC43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphicsProject2Bhop.Editor.Plugins", "GraphicsProject2Bhop.Editor.Plugins.csproj", "{3E1FFBEC-D8BB-9B26-99EA-607DBEF90595}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +13,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2B7B3B11-AB48-97EA-248B-48431C21BC79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B7B3B11-AB48-97EA-248B-48431C21BC79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B7B3B11-AB48-97EA-248B-48431C21BC79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B7B3B11-AB48-97EA-248B-48431C21BC79}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F695A16E-977D-01AC-4A50-744697B6DC43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F695A16E-977D-01AC-4A50-744697B6DC43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F695A16E-977D-01AC-4A50-744697B6DC43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F695A16E-977D-01AC-4A50-744697B6DC43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E1FFBEC-D8BB-9B26-99EA-607DBEF90595}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E1FFBEC-D8BB-9B26-99EA-607DBEF90595}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E1FFBEC-D8BB-9B26-99EA-607DBEF90595}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E1FFBEC-D8BB-9B26-99EA-607DBEF90595}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
