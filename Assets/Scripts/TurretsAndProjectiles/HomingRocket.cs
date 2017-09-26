@@ -8,6 +8,9 @@ public class HomingRocket : MonoBehaviour {
     public GameObject target;
     public GameObject explosionSourceObject;    //The object to clone in as an 'explosion' when we hit something!
 
+    public GameObject spawnerObj;   //This object should be programically set by the spawning turret script to be the turret root object. 
+                                    //We will NOT detect collisions with this until the rocket has reached a 1 unit distance away from it's source.
+
     public float startSpeed;
     public float maxSpeed;      //Rocket will keep accelerating up to this speed!
     public float acceleration;
@@ -17,6 +20,7 @@ public class HomingRocket : MonoBehaviour {
     public float directHitDamage;   //Amount of directly applied damage if the rocket itself hits something, on top of explosion damage
 
     private float speed;
+    private bool noCollideWithSpawner;
 
 	// Use this for initialization
 	void Start () {
@@ -32,8 +36,11 @@ public class HomingRocket : MonoBehaviour {
                 target.transform.position = new Vector3(0, 0, 0);
             }
         }
+        noCollideWithSpawner = true;
+        //Debug.Log("Setting armed to FALSE in start method");
+        //armed = false;
 	}
-	
+
 	// Update is called once per frame
 	void FixedUpdate () {
         moveTowardsTarget();
@@ -42,6 +49,9 @@ public class HomingRocket : MonoBehaviour {
             speed += acceleration * Time.fixedDeltaTime;
             if (speed > maxSpeed) speed = maxSpeed;
         }
+        if (spawnerObj == null || (noCollideWithSpawner && Vector3.Distance(transform.position, spawnerObj.transform.position) > 2f)) {
+            noCollideWithSpawner = false;
+        } 
 	}
 
     private void moveTowardsTarget() {
@@ -52,8 +62,29 @@ public class HomingRocket : MonoBehaviour {
         this.transform.position += forward * speed * Time.fixedDeltaTime;
     }
 
+    private bool checkForSpawningObject(GameObject hit, GameObject spawner) {
+        //If the thing we hit is the spawner, or SOME parent of the spawner, then return true. Else false.
+        while (spawner != null) {
+            if (hit == spawner) {
+                return true;
+            }
+            Transform par = spawner.transform.parent;
+            if (par == null) {
+                spawner = null;
+            }
+            else {
+                spawner = par.gameObject;
+            }
+        }
+        return false;
+    }
+
     private void OnTriggerEnter(Collider other) {
-        //No matter what we hit, we simply spawn an explosion system!
+        if (noCollideWithSpawner && checkForSpawningObject(other.gameObject, spawnerObj)) {
+            return;     //Dont hit spawner if we aren't 'armed' yet so to speak (avoid instantly exploding)
+        }
+
+        //No matter what else we hit, we simply spawn an explosion system!
         GameObject explosion = Object.Instantiate(explosionSourceObject, transform.position, transform.rotation);  //spawn a clone of explosion object at the rocket's current pos and rotation.
         explosionScript script = explosion.GetComponent<explosionScript>();
         if (script != null) {

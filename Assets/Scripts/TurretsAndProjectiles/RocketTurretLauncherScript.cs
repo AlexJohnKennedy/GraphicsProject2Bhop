@@ -27,8 +27,11 @@ public class RocketTurretLauncherScript : MonoBehaviour {
     private float currWaitTime;
     private float currVisionWaitTime;
 
-	// Use this for initialization
-	void Start () {
+    private bool shootFromRight;
+    private int shootTubeLevel;
+
+    // Use this for initialization
+    void Start () {
         LookAtTarget lookScript = this.gameObject.GetComponent<LookAtTarget>();
         if (lookScript == null) {
             //The turret needs a lookAt script! Let's manually add it.
@@ -41,7 +44,10 @@ public class RocketTurretLauncherScript : MonoBehaviour {
 
         currVisionWaitTime = 0;
         currVisionWaitTime = initialFireDelay;
-	}
+
+        shootFromRight = true;
+        shootTubeLevel = 3;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -53,9 +59,6 @@ public class RocketTurretLauncherScript : MonoBehaviour {
             currWaitTime -= Time.deltaTime;
         }
         if (canSeeTarget()) {
-
-            Debug.Log("CAN SEE TARGET: " + target.name);
-
             //We can see! let's count down our initial vision delay timer and fire if it's expired.
             if (currVisionWaitTime > 0) {
                 //Need to wait still.
@@ -82,11 +85,18 @@ public class RocketTurretLauncherScript : MonoBehaviour {
         currWaitTime = fireRefreshTime;
 
         //Now, spawn a rocket and make it target the target!
-        GameObject newRocket = Object.Instantiate(rocketPrefab, transform.position + transform.forward * 0.5f, transform.rotation);
+        Vector3 leftRightOffset = transform.right * 0.28f;  //Offset to the right, so it looks like it's spawning out of the tube.
+        leftRightOffset = (shootFromRight) ? leftRightOffset : -leftRightOffset;
+        
+        Vector3 spawnpos = transform.position + transform.forward * 0.5f + leftRightOffset + getVerticalSpawnOffset();   
+        GameObject newRocket = Object.Instantiate(rocketPrefab, spawnpos, transform.rotation);
+
+        switchOffsetsToNextTube();
 
         HomingRocket homingScript = newRocket.GetComponent<HomingRocket>();
         if (homingScript != null) {
             homingScript.target = target;
+            homingScript.spawnerObj = this.gameObject;
             if (overrideRocketParameters) {
                 homingScript.startSpeed = rocketStartSpeed;
                 homingScript.acceleration = rocketAcceleration;
@@ -97,8 +107,35 @@ public class RocketTurretLauncherScript : MonoBehaviour {
             }
         }
 
+        newRocket.SetActive(true);
         //Add to active rockets list so that we can keep track of how many rockets are active!
         activeRockets.Add(newRocket);
+    }
+
+    private void switchOffsetsToNextTube() {
+        shootFromRight = shootFromRight ? false : true;
+
+        //If we just switched to the RIGHT side, then we need to go down a tube level!
+        if (shootFromRight) {
+            shootTubeLevel -= 1;
+            //If we just went below the lowest level, rest to the top level!
+            if (shootTubeLevel == 0) {
+                shootTubeLevel = 3;
+            }
+        }
+    }
+
+    private Vector3 getVerticalSpawnOffset() {
+        if (shootTubeLevel == 2) {
+            return Vector3.zero;
+        }
+        Vector3 up = transform.up * 0.219f;
+        if (shootTubeLevel == 3) {
+            return up;
+        }
+        else {
+            return -up;
+        }
     }
 
     private bool canSeeTarget() {

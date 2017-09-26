@@ -41,7 +41,7 @@ public class HealthScript : MonoBehaviour {
             currHealth = 0;
 
             //Time to die
-            Object.Destroy(this.gameObject, 0.5f);     //Use the OnDestroy() call in another script to define onDestory behaviour!
+            Object.Destroy(this.gameObject);     //Use the OnDestroy() call in another script to define onDestory behaviour!
         }
     }
 }
