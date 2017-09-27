@@ -98,8 +98,10 @@
     <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\WallObstacleGenerator.cs" />
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\HomingRocket.cs" />
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\LaserScript.cs" />
+    <Compile Include="Assets\Scripts\TurretsAndProjectiles\LaserTurret_Charge.cs" />
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\LaserTurret_Constant.cs" />
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\LookAtTarget.cs" />
+    <Compile Include="Assets\Scripts\TurretsAndProjectiles\PreLaserChargeupScript.cs" />
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\RocketTurretLauncherScript.cs" />
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\explosionScript.cs" />
   </ItemGroup>

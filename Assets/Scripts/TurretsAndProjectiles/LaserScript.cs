@@ -23,7 +23,7 @@ public class LaserScript : MonoBehaviour {
         texOffset = new Vector2(0, 0);
         
         //DEBUG
-        setLaserRay(new Vector3(10, 1.2f, 0), new Vector3(0, 0, 1));
+        //setLaserRay(new Vector3(10, 1.2f, 0), new Vector3(0, 0, 1));
 
         lineParticles = GetComponent<ParticleSystem>();
     }
