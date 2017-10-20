@@ -19,6 +19,8 @@ public class MovementScript_NoRBphysics : MonoBehaviour {
 
     public float mouseSensitivity;
 
+    public bool easyModeBhop;
+
     private Rigidbody rb;   //We will be using this to apply force in order to make the camera move instead of just hardcoding transforms, so rigid body collisions work better!
 
     private float angleX;
@@ -29,6 +31,9 @@ public class MovementScript_NoRBphysics : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
+        //Use the statically available startGame script variables to determine movement settings, (I.e. easy mode or hard mode)
+        easyModeBhop = StartGameScript.startGameWithEasyMode;
+
         angleX = 0;
         angleY = 0;
         angleZ = 0;
@@ -177,18 +182,24 @@ public class MovementScript_NoRBphysics : MonoBehaviour {
 
         Vector3 desiredMoveDir = new Vector3(0, 0, 0);
 
-        //Desired move direction will be determined by the current orientation and the player's input keys!
-        if (Input.GetKey(KeyCode.W)) {
-            desiredMoveDir += forward;
+        //Desired move direction will be determined by the current orientation and the player's input keys! (If we are not in easy mode)
+        if (!easyModeBhop) {
+            if (Input.GetKey(KeyCode.W)) {
+                desiredMoveDir += forward;
+            }
+            if (Input.GetKey(KeyCode.S)) {
+                desiredMoveDir += -forward;
+            }
+            if (Input.GetKey(KeyCode.A)) {
+                desiredMoveDir += -right;
+            }
+            if (Input.GetKey(KeyCode.D)) {
+                desiredMoveDir += right;
+            }
         }
-        if (Input.GetKey(KeyCode.S)) {
-            desiredMoveDir += -forward;
-        }
-        if (Input.GetKey(KeyCode.A)) {
-            desiredMoveDir += -right;
-        }
-        if (Input.GetKey(KeyCode.D)) {
-            desiredMoveDir += right;
+        else {
+            //EASY MODE (BOOOOO) determine the desiredMoveDir based on the mouse movement to supply auto strafing, to help beginner players with bhopping.
+            desiredMoveDir = easyModeGetAccelVector();
         }
 
         desiredMoveDir.Normalize();
@@ -203,6 +214,32 @@ public class MovementScript_NoRBphysics : MonoBehaviour {
         //Directly set the RB's velocty to result vector, after restoring the y component value!
         accelerateResult.y = yComponent;
         rb.velocity = accelerateResult;
+    }
+
+    //This function will use the current mouse 'difference' to automatically strafe for you, and provide perfect WASD strafing for the player.
+    //This will make movement easier and more accessible whil still being bohp movement. However, it also removes most of the skill and timing requirments, so in my opinion, 
+    //makes it alot less fun. :(
+    private Vector3 easyModeGetAccelVector() {
+        //AUTO STRAFE IF AND ONLY IF YOU'RE HOLDING THE W KEY.
+        if (!Input.GetKey(KeyCode.W)) {
+            return new Vector3(0, 0, 0);
+        }
+
+        Vector2 mouseDelta = new Vector2(Input.GetAxisRaw("Mouse Y"), Input.GetAxisRaw("Mouse X"));
+
+        Vector3 right = new Vector3(transform.right.x, 0, transform.right.z);
+        right.Normalize();
+
+        if (mouseDelta.y > 0) {
+            //Mouse moving RIGHT. thus, automatically strafe to the right.
+            return right;
+        }
+        else if (mouseDelta.y < 0) {
+            return -right;
+        }
+        else {
+            return new Vector3(0, 0, 0);
+        }
     }
 
     // accelDir: normalized direction that the player has requested to move (taking into account the movement keys and look direction)

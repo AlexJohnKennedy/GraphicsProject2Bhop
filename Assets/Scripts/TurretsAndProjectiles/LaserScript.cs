@@ -45,13 +45,9 @@ public class LaserScript : MonoBehaviour {
             hitPosition = hitInfo.point;
 
             //Second, check if the thing we hit has health scripting attatched. If so, apply some damage! baby!
-            Rigidbody rb = hitInfo.rigidbody;
-            if (rb != null) {
-                GameObject hit = hitInfo.rigidbody.gameObject;
-                HealthScript applyDamage = hit.GetComponent<HealthScript>();
-                if (applyDamage != null) {
-                    applyDamage.takeDamageEvent.Invoke(laserDamagePerTick, this.gameObject);
-                }
+            HealthScript applyDamage = hitInfo.collider.GetComponent<HealthScript>();
+            if (applyDamage != null) {
+                applyDamage.takeDamageEvent.Invoke(laserDamagePerTick, this.gameObject);
             }
         }
         else {

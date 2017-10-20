@@ -84,9 +84,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\DeathWallScript.cs" />
+    <Compile Include="Assets\Scripts\DeathWallTrigger.cs" />
     <Compile Include="Assets\Scripts\FlyingCamera.cs" />
     <Compile Include="Assets\Scripts\HealthAndCombat\HealthScript.cs" />
     <Compile Include="Assets\Scripts\Hud\StatGatherer.cs" />
+    <Compile Include="Assets\Scripts\ObjectActivationTrigger.cs" />
     <Compile Include="Assets\Scripts\PlayerMovementScripts\AirBraking.cs" />
     <Compile Include="Assets\Scripts\PlayerMovementScripts\GroundMovement.cs" />
     <Compile Include="Assets\Scripts\PlayerMovementScripts\MovementScript_NoRBphysics.cs" />
@@ -96,8 +99,14 @@
     <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\LinearCourse.cs" />
     <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\UVCalculator.cs" />
     <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\WallObstacleGenerator.cs" />
+    <Compile Include="Assets\Scripts\SceneTransitions\GameOverTimer.cs" />
+    <Compile Include="Assets\Scripts\SceneTransitions\StartGameScript.cs" />
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\HomingRocket.cs" />
+    <Compile Include="Assets\Scripts\TurretsAndProjectiles\LaserScript.cs" />
+    <Compile Include="Assets\Scripts\TurretsAndProjectiles\LaserTurret_Charge.cs" />
+    <Compile Include="Assets\Scripts\TurretsAndProjectiles\LaserTurret_Constant.cs" />
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\LookAtTarget.cs" />
+    <Compile Include="Assets\Scripts\TurretsAndProjectiles\PreLaserChargeupScript.cs" />
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\RocketTurretLauncherScript.cs" />
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\explosionScript.cs" />
   </ItemGroup>
