@@ -120,12 +120,12 @@ public class LinearCourse : MonoBehaviour {
         else if (rand < obstacleChanceBrackets[THIN_JUMP_BLOCK_INDEX]) {
             float angle = getRandomAngle();
             float width = jumpBlockWidth + Random.Range(-1f, 1f) * jumpBlockWidthVariation;
-            gameObj = JumpBlockGenerator.generateJumpBlock(lenOffset, courseWidth, currentFloorHeight, jumpHeight, 3f, width, angle, obstacleWallMaterial);
+            gameObj = JumpBlockGenerator.generateJumpBlock(lenOffset, courseWidth, currentFloorHeight, jumpHeight, 3f, width, angle, jumpBlockMaterial);
         }
         else if (rand < obstacleChanceBrackets[FAT_JUMP_BLOCK_INDEX]) {
             float angle = getRandomAngle();
             float width = jumpBlockWidth + Random.Range(-1f, 1f) * jumpBlockWidthVariation;
-            gameObj = JumpBlockGenerator.generateJumpBlock(lenOffset, courseWidth, currentFloorHeight, jumpHeight, 7.5f, width, angle, obstacleWallMaterial);
+            gameObj = JumpBlockGenerator.generateJumpBlock(lenOffset, courseWidth, currentFloorHeight, jumpHeight, 7.5f, width, angle, jumpBlockMaterial);
         }
         else if (rand < obstacleChanceBrackets[TALL_JUMP_BLOCK_INDEX]) {
             float angle = getRandomAngle();
@@ -193,20 +193,20 @@ public class LinearCourse : MonoBehaviour {
         int[] triangles = { 0, 1, 2, 2, 3, 0 };
         mesh.triangles = triangles;
 
-        Vector2[] uvs = { new Vector2(0,0),
-                          new Vector2(1,0),
-                          new Vector2(1,1),
-                          new Vector2(0,1) };
+        Vector2[] uvs = { new Vector2(verts[0].x,verts[0].z),
+                          new Vector2(verts[1].x,verts[1].z),
+                          new Vector2(verts[2].x,verts[2].z),
+                          new Vector2(verts[3].x,verts[3].z), };
         uvs = uvs;
 
 
         //Create the mesh and assign it to the gameobjects meshFilter and mesh collider
         filter.mesh = mesh;
         collider.sharedMesh = mesh;
+        mesh.RecalculateNormals();
 
         //Setup the renderer
         renderer.material = this.floorMaterial;
-        renderer.material.SetTexture("stone ground", stonyGround);
 
         //SWAP TEXTURES FOR NEXT GUY TO GET DIFFERENT MATERIAL
         Material tmp = floorMaterial;
@@ -268,7 +268,7 @@ public class LinearCourse : MonoBehaviour {
 
     private void debugPrintArray(float[] arr) {
         for (int i=0; i< arr.Length; i++) {
-            Debug.Log("item " + i + " = " + arr[i]);
+            //Debug.Log("item " + i + " = " + arr[i]);
         }
     }
 

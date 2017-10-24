@@ -5,6 +5,9 @@ using UnityEngine;
 public class LookAtTarget : MonoBehaviour {
 
     public float maxRadianRotationPerFixedUpdate;
+    public float minRadianRoationPerFixedUpdate;
+    public float maxRotationAngle;  //Degrees. if the target is at a higher angle than this, we will use max rotation speed (to 'catch up')
+    public float minRotationAngle;  //Degrees. the angle at which we will use min rotation speed.
 
     public GameObject target;
 
@@ -25,9 +28,23 @@ public class LookAtTarget : MonoBehaviour {
             this.gameObject.transform.LookAt(target.transform.position);
         }
         else {
-            Vector3 forward = this.transform.forward;
+            float rotationSpeed;
             Vector3 targetDirection = target.transform.position - this.transform.position; //Vector pointing from here to target.
-            forward = Vector3.RotateTowards(forward, targetDirection, maxRadianRotationPerFixedUpdate, 0);
+            float angle = Vector3.Angle(this.transform.forward, targetDirection);
+
+            if (angle <= minRotationAngle) {
+                rotationSpeed = minRadianRoationPerFixedUpdate;
+            }
+            else if (angle >= maxRotationAngle) {
+                rotationSpeed = maxRadianRotationPerFixedUpdate;
+            }
+            else {
+                float ratio = (angle - minRotationAngle) / (maxRotationAngle - minRotationAngle);
+                rotationSpeed = minRadianRoationPerFixedUpdate + ratio * (maxRadianRotationPerFixedUpdate - minRadianRoationPerFixedUpdate);
+            }
+
+            Vector3 forward = this.transform.forward;
+            forward = Vector3.RotateTowards(forward, targetDirection, rotationSpeed, 0);
             this.transform.LookAt(this.transform.position + forward);
         }
     }

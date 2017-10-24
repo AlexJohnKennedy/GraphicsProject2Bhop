@@ -53,6 +53,10 @@ public class HealthScript : MonoBehaviour {
 
     //Player character listener only
     private void playerDamageTake(float dmgAmount, GameObject damager) {
+        ShowVignetteWhenTakeDamage d = FindObjectOfType<ShowVignetteWhenTakeDamage>();
+        if (d != null) {
+            d.damageWasTaken();
+        }
 
         currHealth -= dmgAmount;
 

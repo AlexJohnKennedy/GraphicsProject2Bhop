@@ -39,6 +39,7 @@ public class JumpBlockGenerator {
         Vector2[] uvs = new Vector2[20];
 
         mesh.uv = CubeUvCalculator.getUVMappingsNonuniform(mesh.vertices, 1);
+        mesh.RecalculateNormals();
 
         return mesh;
     }

@@ -53,4 +53,8 @@ public class LaserTurret_Constant : MonoBehaviour {
     private bool canSeeTarget() {
         return Vector3.Distance(transform.position, target.transform.position) <= visionDist;
     }
+
+    private void OnDisable() {
+        if (currentLaserInstance != null) this.currentLaserInstance.gameObject.SetActive(false);    
+    }
 }

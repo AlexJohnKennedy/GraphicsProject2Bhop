@@ -119,6 +119,7 @@ public class FloorRaiseGenerator {
         mesh.vertices = verts;
         mesh.triangles = trigs;
         mesh.uv = CubeUvCalculator.getUVMappingsNonuniform(verts, 5f);
+        mesh.RecalculateNormals();
 
         return mesh;
     }

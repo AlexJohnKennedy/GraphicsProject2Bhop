@@ -84,23 +84,38 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\CustomLaserSpeedScript.cs" />
     <Compile Include="Assets\Scripts\DeathWallScript.cs" />
-    <Compile Include="Assets\Scripts\DeathWallTrigger.cs" />
     <Compile Include="Assets\Scripts\FlyingCamera.cs" />
     <Compile Include="Assets\Scripts\HealthAndCombat\HealthScript.cs" />
+    <Compile Include="Assets\Scripts\Hud\GetCutsceneSetting.cs" />
+    <Compile Include="Assets\Scripts\Hud\GetLevel.cs" />
+    <Compile Include="Assets\Scripts\Hud\GetTutorialSetting.cs" />
+    <Compile Include="Assets\Scripts\Hud\ShowVignetteWhenTakeDamage.cs" />
     <Compile Include="Assets\Scripts\Hud\StatGatherer.cs" />
-    <Compile Include="Assets\Scripts\ObjectActivationTrigger.cs" />
+    <Compile Include="Assets\Scripts\Hud\TutorialScript.cs" />
     <Compile Include="Assets\Scripts\PlayerMovementScripts\AirBraking.cs" />
     <Compile Include="Assets\Scripts\PlayerMovementScripts\GroundMovement.cs" />
     <Compile Include="Assets\Scripts\PlayerMovementScripts\MovementScript_NoRBphysics.cs" />
     <Compile Include="Assets\Scripts\PlayerMovementScripts\PlayerAnimatorEvents.cs" />
+    <Compile Include="Assets\Scripts\PlayerMovementScripts\PlayerSoundScript.cs" />
+    <Compile Include="Assets\Scripts\PlayerMovementScripts\ReflectiveShieldScript.cs" />
     <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\FloorRaiseGenerator.cs" />
     <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\JumpBlockGenerator.cs" />
     <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\LinearCourse.cs" />
     <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\UVCalculator.cs" />
     <Compile Include="Assets\Scripts\ProcedurallyGeneratedObstacles\WallObstacleGenerator.cs" />
     <Compile Include="Assets\Scripts\SceneTransitions\GameOverTimer.cs" />
+    <Compile Include="Assets\Scripts\SceneTransitions\GoBackToMainMenu.cs" />
+    <Compile Include="Assets\Scripts\SceneTransitions\LevelSpawningScript.cs" />
+    <Compile Include="Assets\Scripts\SceneTransitions\OnTriggerGoToWinScreen.cs" />
     <Compile Include="Assets\Scripts\SceneTransitions\StartGameScript.cs" />
+    <Compile Include="Assets\Scripts\TriggerAndEventsScripts\ArenaWallAnimationOnTrigger.cs" />
+    <Compile Include="Assets\Scripts\TriggerAndEventsScripts\CameraEventAnimationScript.cs" />
+    <Compile Include="Assets\Scripts\TriggerAndEventsScripts\DeathWallTrigger.cs" />
+    <Compile Include="Assets\Scripts\TriggerAndEventsScripts\ObjectActivationTrigger.cs" />
+    <Compile Include="Assets\Scripts\TriggerAndEventsScripts\SimpleCallbackScript.cs" />
+    <Compile Include="Assets\Scripts\TurretsAndProjectiles\ExplodeOnDeath.cs" />
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\HomingRocket.cs" />
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\LaserScript.cs" />
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\LaserTurret_Charge.cs" />
@@ -111,6 +126,9 @@
     <Compile Include="Assets\Scripts\TurretsAndProjectiles\explosionScript.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\CustomShaders\CustomShieldEffect.shader" />
+    <None Include="Assets\CustomShaders\GouraudShader.shader" />
+    <None Include="Assets\CustomShaders\OnlyTextureHorizontalsShader.shader" />
     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
     <None Include="Assets\Standard Assets\ParticleSystems\ParticleSystemsGuidelines.txt" />
     <None Include="Assets\Standard Assets\ParticleSystems\Shaders\PriorityParticleAdd.shader" />

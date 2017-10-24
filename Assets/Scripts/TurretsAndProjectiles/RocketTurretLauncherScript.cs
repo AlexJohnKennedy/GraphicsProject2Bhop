@@ -14,6 +14,8 @@ public class RocketTurretLauncherScript : MonoBehaviour {
     public float rocketAcceleration;
     public float rocketRotationPerFixedUpdate;
 
+    public float onEnableExtraFiringDelay;  //Can be used to add 'initial delay' only after 'enabling' (spawning). Usful so the turrets don't just shoot the player before the player realises they have spawned.
+
     public float visionDistance;    //How far the turret can 'see' (used in raycast).
     public float fireRefreshTime;   //how long the turret must wait in between firing a rocket.
     public float initialFireDelay;  //How long the turret must INITIALLY wait before firing after 'seeing' the player.
@@ -30,6 +32,9 @@ public class RocketTurretLauncherScript : MonoBehaviour {
     private bool shootFromRight;
     private int shootTubeLevel;
 
+    private AudioSource launcherSoundSource;
+    public AudioClip launchSound;
+
     // Use this for initialization
     void Start () {
         LookAtTarget lookScript = this.gameObject.GetComponent<LookAtTarget>();
@@ -42,15 +47,22 @@ public class RocketTurretLauncherScript : MonoBehaviour {
 
         activeRockets = new List<GameObject>();
 
-        currVisionWaitTime = 0;
+        currWaitTime = onEnableExtraFiringDelay;
         currVisionWaitTime = initialFireDelay;
 
         shootFromRight = true;
         shootTubeLevel = 3;
+
+        launcherSoundSource = this.gameObject.AddComponent<AudioSource>();
+        launcherSoundSource.spatialBlend = 0.6f;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    private void OnEnable() {
+        currWaitTime = onEnableExtraFiringDelay;
+    }
+
+    // Update is called once per frame
+    void Update () {
         //Cull active rockets that have become inactive
         cullDeadRockets();
 
@@ -80,6 +92,8 @@ public class RocketTurretLauncherScript : MonoBehaviour {
 	}
 
     private void shootRocket() {
+        launcherSoundSource.PlayOneShot(launchSound, 0.3f);
+
         //This method assumes the conditions for firing a rocket have been met and simply fires one.
         //First, reset the firing timer
         currWaitTime = fireRefreshTime;

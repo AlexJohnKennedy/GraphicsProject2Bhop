@@ -170,4 +170,9 @@ public class LaserTurret_Charge : MonoBehaviour {
             return false;
         }
     }
+
+    private void OnDisable() {
+        if (mainLaserInstance != null) this.mainLaserInstance.gameObject.SetActive(false);
+        if (chargeBeamInstance != null) this.chargeBeamInstance.gameObject.SetActive(false);
+    }
 }

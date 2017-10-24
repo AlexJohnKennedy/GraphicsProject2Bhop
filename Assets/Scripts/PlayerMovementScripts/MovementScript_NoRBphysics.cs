@@ -29,6 +29,8 @@ public class MovementScript_NoRBphysics : MonoBehaviour {
 
     private bool onGround;
 
+    private PlayerSoundScript soundScript;
+
     // Use this for initialization
     void Start() {
         //Use the statically available startGame script variables to determine movement settings, (I.e. easy mode or hard mode)
@@ -46,6 +48,10 @@ public class MovementScript_NoRBphysics : MonoBehaviour {
         //Add we need to do is aquire a reference to this rigid body
         rb = GetComponent<Rigidbody>();
 
+        //Aquire the player's sound script and add it if it does not exist, since it is required.
+        soundScript = this.GetComponent<PlayerSoundScript>();
+        if (soundScript == null) soundScript = this.gameObject.AddComponent<PlayerSoundScript>();
+
         //Since we are using half life bhop movment, we will be implementing friction (on the player) MANUALLY in our physics engine updates.
         //Thus, we will enforce a ZERO DRAG coefficient on our rigid body in this script upon startup.
         rb.drag = 0;
@@ -57,12 +63,21 @@ public class MovementScript_NoRBphysics : MonoBehaviour {
     // FixedUpdate  a physics engine update that is called in perfect sync with the physics engine
     void FixedUpdate() {
 
+        //Save the previous state of 'onGround' so that we can determine if it changed. If it did (landed) then we can tell the player sound script that we 'landed'
+        bool prevOnGroundState = onGround;
+
         //First, check if we are on the ground. If we are NOT on the ground, then we should use air control physics.
         //If we ARE on the ground, use normal movement physics.
         onGround = performGroundCheckRaycast(distanceToCheckGround);
 
         if (onGround) {
             groundMovement();
+
+            //If the previous ground state was not on ground, that means we LANDED on this frame!
+            if (!prevOnGroundState) {
+                //Tell the sound script to play the landing sound.
+                soundScript.playLandingSound();
+            }
         }
         else {
             airMovement();
